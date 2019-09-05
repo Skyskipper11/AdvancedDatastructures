@@ -1,0 +1,1404 @@
+Sourabh Kashyap
+A2318719003
+Advanced Data Structures
+Program 1:A book consists of chapters, chapters consist of sections and sections consist of subsections. Construct a tree and print the nodes. Find the time and space requirements of your method.
+Sol:
+# include <iostream>
+# include <cstdlib>
+# include <string.h>
+# include <stdio.h>
+# include <istream>
+using namespace std;
+// Node Declaration
+struct node
+{
+char bookname[50] = {0};
+int ch_count;
+struct node *child[60] = { 0 };
+}*ptr;
+// Class Declaration
+class Binarysearchtree
+{
+public:
+void create_tree();
+void display(node * r1);
+Binarysearchtree()
+{
+ptr = NULL;
+}
+};
+void Binarysearchtree::create_tree()
+{
+int Books, Chapters=NULL, i, j, k;
+ptr = new node();
+cout << "Enter name of book" << endl;
+getchar();
+cin.getline(ptr->bookname, 30);
+cout << "Enter no. of chapters in book" << endl;
+cin >> Chapters;
+ptr->ch_count = Chapters;
+//get chapters
+for (i = 0; i < Chapters; i++)
+{
+ptr->child[i] = new node;
+cout << "Enter Chapter "<<i+1<<" name"<<endl;
+getchar();
+cin.getline(ptr->child[i]->bookname, 20);
+cout << "Enter no. of sections in Chapter: " << ptr->child[i]->bookname << endl;
+cin >> ptr->child[i]->ch_count;
+//get sections
+for (j = 0; j < ptr->child[i]->ch_count; j++)
+{
+ptr->child[i]->child[j] = new node;
+cout << "Enter Section " << j + 1 << " name"<<endl;
+getchar();
+cin.getline(ptr->child[i]->child[j]->bookname, 20);
+cout<<"Enter no. of subsections in "<<ptr->child[i]->child[j]->bookname<<endl;
+cin>>ptr->child[i]->child[j]->ch_count;
+//get subsections
+for (k = 0; k < ptr->child[i]->child[j]->ch_count; k++)
+{
+ptr->child[i]->child[j]->child[k] = new node;
+cout << "Enter SubSection " << k + 1 << " name" << endl;
+getchar();
+cin.getline(ptr->child[i]->child[j]->child[k]->bookname, 20);
+}
+}
+}
+}
+void Binarysearchtree::display(node * r1)
+{
+int i, j, k, Chapters;
+if (r1 != NULL)
+{
+//display book
+cout << "\t-----Book Hierarchy---\n";
+cout << "\t Book title : " << r1->bookname<<"\n";
+Chapters = r1->ch_count;
+//display chapters
+for (i = 0; i < Chapters; i++)
+{
+cout << "\t\t Chapter :"<< r1->child[i]->bookname;
+//display sections
+for (j = 0; j < r1->child[i]->ch_count; j++)
+{
+cout << "\t\t Sections : "<<r1->child[i]->child[j]->bookname<<endl;
+//display subsections
+for (k = 0; k < r1->child[i]->child[j]->ch_count; k++)
+{
+cout << "\t\t\t subsections : " <<r1->child[i]->child[j]->child[k]->bookname << endl;
+}
+}
+}
+}
+}
+//main function
+int main()
+{
+int choice;
+Binarysearchtree bst;
+while (1)
+{
+cout << "-----------------" << endl;
+cout << "Book Tree Creation" << endl;
+cout << "-----------------" << endl;
+cout << "1.Create" << endl;
+cout << "2.Display" << endl;
+cout << "3.Quit" << endl;
+cout << "Enter your choice :"<<endl;
+cin >> choice;
+getchar();
+switch (choice)
+{
+case 1:
+bst.create_tree();
+case 2:
+bst.display(ptr);
+break;
+case 3:
+exit(1);
+default:
+cout << "Wrong choice" << endl;
+}
+}
+}
+Program 2: Beginning with an empty binary search tree, construct binary search tree by inserting the values in the order given. After constructing a binary tree –
+a. Insert new node
+b. Find number of nodes in longest path
+c. Minimum data value found in the tree
+d. Change a tree so that the roles of the left and right pointers are swapped at every node
+e. Search a value
+Sol:
+#include<iostream>
+using namespace std;
+// Node Declaration
+class node
+{
+public:
+int data;
+node *lchild,*rchild;
+node();
+};
+node::node()
+{
+lchild=rchild=NULL;
+}
+// BST Declaration
+class BST : public node
+{
+node *root;
+public:
+BST()
+{
+root=NULL;
+}
+void create();
+void Inorder(node *);
+void Preorder(node *);
+void Postorder(node *);
+void Smallest();
+void Greatest();
+int Height(node *);
+void search(node *,int);
+node* getroot();
+node* mirror(node *);
+};
+node* BST::getroot()
+{
+return root;
+}
+// create BST
+void BST::create()
+{
+char element;
+node *temp;
+do
+{
+temp=new node();
+cout<<"Enter data :";
+cin>>temp->data;
+if(root==NULL)// Defining the root node
+{
+root=temp;
+}
+else
+{
+node *trav,*parent;
+trav=root;
+parent=trav;
+while(trav!=NULL)
+{
+if(temp->data<trav->data)
+{
+parent=trav;
+trav=trav->lchild;
+}
+else
+{
+parent=trav;
+trav=trav->rchild;
+//here we are only traversing
+}
+}
+if(temp->data<parent->data)
+{
+parent->lchild=temp;//here we are assigning value
+}
+else
+{
+parent->rchild=temp;
+}
+}cout<<"ADD ANOTHER..(y/n)";
+cin>>element;
+}while(element=='y'||element=='Y');
+}
+// Inorder BST
+void BST::Inorder(node *n)
+{
+if(n!=NULL)
+{
+Inorder(n->lchild);
+cout<<n->data<<" ";
+Inorder(n->rchild);
+}
+}
+// Pre-order BST
+void BST::Preorder(node *n)
+{
+if(n!=NULL)
+{
+cout<<n->data<<" ";
+Inorder(n->lchild);
+Inorder(n->rchild);
+}
+}
+// Post-order BST
+void BST::Postorder(node *n)
+{
+if(n!=NULL)
+{
+Inorder(n->lchild);
+Inorder(n->rchild);
+cout<<n->data<<" ";
+}
+}
+// finding the smallest element
+void BST::Smallest()
+{
+node *temp;
+temp=root;
+while(temp->lchild!=NULL)
+{
+temp=temp->lchild;
+}
+cout<<"The Smallest element is:"<<temp->data<<"";
+}
+// finding the greatest element
+void BST::Greatest()
+{
+node *temp;
+temp=root;
+while(temp->rchild!=NULL)
+{
+temp=temp->rchild;
+}
+cout<<"The Greatest element is:"<<temp->data<<"";
+}
+// Calculating the Height of the Tree
+int BST::Height(node *n)
+{
+if(n==NULL)
+{
+return 0;
+}
+int lheight=Height(n->lchild);
+int rheight=Height(n->rchild);
+if(lheight>rheight)
+return (1+lheight);
+else
+return (1+rheight);
+}
+// searching an element
+void BST::search(node *n,int temp)
+{
+if(n!=NULL)
+{
+if(temp < n->data)
+{
+search(n->lchild,temp);
+}
+else if(temp > n->data)
+{
+search(n->rchild,temp);
+}
+else
+{
+cout<<"Entered element found.";
+}
+}
+else
+{
+cout<<"Element not Found...!";
+}
+}
+// mirror node
+node *BST::mirror(node *n)
+{
+if(n==NULL)
+{
+return 0;
+}
+else
+{
+node *temp;
+mirror(n->lchild);
+mirror(n->rchild);
+temp=n->lchild;
+n->lchild=n->rchild;
+n->rchild=temp;
+return n;}
+}
+int main()
+{
+BST s;
+int ch,a,temp;
+char ans;
+cout << " \t\n Create a BST first \n";
+s.create();
+do
+{
+cout << "\n\twhat operation do you want to do on the created BST\n";
+cout << "1)Inorder\n";
+cout << "2)preorder\n";
+cout << "3)postorder\n";
+cout << "4)Smallest\n";
+cout << "5)Greatest\n";
+cout << "6)Heigh of tree\n";
+cout << "7)Mirror\n";
+cout << "8)Search\n";
+cin>>ch;
+switch(ch)
+{
+case 1:{cout<<"Inorder:";
+s.Inorder(s.getroot());
+break;}
+case 2:{cout<<"Prestorder:";
+s.Preorder(s.getroot());
+break;}
+case 3:{cout<<"Postorder:";
+s.Postorder(s.getroot());
+break;}
+case 4:{s.Smallest();
+break;}
+case 5:{s.Greatest();
+break;}
+case 6:{a=s.Height(s.getroot());
+cout<<"Height of tree is:"<<a;
+break;}
+case 7:{s.mirror(s.getroot());
+s.Inorder(s.getroot());
+break;}
+case 8:{cout<<"Enter element to search:";
+cin>>temp;
+s.search(s.getroot(),temp);
+break;}
+}
+getchar();
+cout<<"\n\t Do you want any more operations on BST (y/n)";
+cin>>ans;
+}while(ans=='y');
+getchar();
+}
+Program 3: For given expression eg. a-b*c-d/e+f construct in-order sequence and traverse it using post-order traversal (non recursive).
+Sol :
+#include<iostream>
+#include<stack>
+#include<conio.h>
+using namespace std;
+class BST {
+typedef struct node {
+int data;
+struct node * right, *left;
+}node;
+public:
+node * root, *temp;
+BST()
+{
+root = new node;
+root = NULL;
+}
+void create();
+void insert(node * root, node * temp);
+void postOrder_recursive(node * root);
+void postOrder_nonRecursive(node* root);
+void InOrder_nonRecursive(node* root);
+void PreOrder_nonRecursive(node* root);
+void display(node* root, int space);
+};
+void BST::create()
+{
+{
+temp = new node;
+cout << "\nEnter the data : ";
+cin >> temp->data;
+temp->left = temp->right = NULL;
+if (root == NULL)
+{
+root = temp;
+}
+else
+{
+insert(root, temp);
+}
+}
+}
+void BST::insert(node * root, node * temp)
+{
+char ch;
+cout << "\nDo u want to enter " << temp->data << " as left or rright child of " << root->data << " (l/r): ";
+cin >> ch;
+if (ch == 'l')
+{
+if (root->left == NULL)
+{
+root->left = temp;
+}
+else
+insert(root->left, temp);
+}
+else
+{
+if (root->right == NULL)
+root->right = temp;
+else
+insert(root->right, temp);
+}
+}
+void BST:: postOrder_recursive(node * root)
+{
+if (root != NULL)
+{
+postOrder_recursive(root->left);
+postOrder_recursive(root->right);
+cout << "\t " << root->data;
+}
+}
+void BST::postOrder_nonRecursive(node* root)
+{
+if (!root)
+{
+cout << "\nEmpty";
+return;
+}
+stack<node *> s;
+stack<node*> p;
+s.push(root);
+while (!s.empty())
+{
+node * cur = s.top();
+p.push(cur);
+s.pop();
+if (cur->left)
+s.push(cur->left);
+if (cur->right)
+s.push(cur->right);
+}
+while (!p.empty()) {
+cout << "\t" << p.top()->data;
+p.pop();
+}
+}
+//Inorder
+void BST:: InOrder_nonRecursive(node* root)
+{
+if (!root)
+{
+cout << "\nEmpty";
+return;
+}
+stack<node *> s;
+stack<node*> p;
+while (true) {
+while (root != NULL) {
+s.push(root);
+root = root->left;
+}
+if (s.empty())
+return;
+root = s.top();
+s.pop();
+cout << "\t " << root->data;
+root = root->right;
+}
+}
+// PreOrder
+void BST:: PreOrder_nonRecursive(node* root)
+{
+if (!root)
+{
+cout << "\nEmpty";
+return;
+}
+stack<node *> s;
+stack<node*> p;
+while (true) {
+while (root != NULL) {
+cout << "\t " << root->data;
+s.push(root);
+root = root->left;
+}
+if (s.empty())
+return;
+root = s.top();
+s.pop();
+root = root->right;
+}
+}
+void BST:: display(node* root, int space)
+{
+if (root == NULL)
+return;
+space += 3;
+display(root->right, space);
+cout << "\n";
+for (int i = 3; i <= space; i++)
+{
+cout << " ";
+}
+cout << root->data << "\n";
+display(root->left, space);
+//getchar();
+}
+int main() {
+BST b;
+char ch;
+do {
+b.create();
+cout << "\nDo u wnat to insert more elements : (Y/N) ";
+cin >> ch;
+} while (ch == 'y' || ch == 'Y');
+getchar();
+b.display(b.root, 0);
+getchar();
+cout << "\nRecursive Post Order : ";
+b.postOrder_recursive(b.root);
+getchar();
+cout << "\nNon Recursive Post Order : ";
+b.postOrder_nonRecursive(b.root);
+getchar();
+cout << "\nNon Recursive In Order : ";
+b.InOrder_nonRecursive(b.root);
+getchar();
+cout << "\nNon Recursive Pre Order : ";
+b.PreOrder_nonRecursive(b.root);
+getchar();
+return 0;
+}
+Program 6: Convert given binary tree into threaded binary tree. Analyze time and space complexity of the algorithm.
+Sol:
+#include <iostream>
+#include <queue>
+#include <conio.h>
+using namespace std;
+//node for (threaded binary tree)
+struct Node
+{
+int key;
+Node *left, *right;
+bool isThreaded;
+};
+// This function returns rightmost child of
+//root.
+Node *createThreaded(Node *root)
+{
+if (root == NULL)
+return NULL;
+if (root->left == NULL &&
+root->right == NULL)
+return root;
+if (root->left != NULL)
+{
+Node* l = createThreaded(root->left);
+l->right = root;
+l->isThreaded = true;
+}
+if (root->right == NULL)
+return root;
+return createThreaded(root->right);
+}
+// function to find leftmost node
+Node *leftMost(Node *root)
+{
+while (root != NULL && root->left != NULL)
+root = root->left;
+return root;
+}
+// inorder traversal of a threadded binary tree
+void inOrder(Node *root)
+{
+if (root == NULL) return;
+Node *cur = leftMost(root);
+while (cur != NULL)
+{
+cout << cur->key << " ";
+if (cur->isThreaded)
+cur = cur->right;
+else
+cur = leftMost(cur->right);
+}
+}
+// function to create a new node
+Node *newNode(int key)
+{
+Node *temp = new Node;
+temp->left = temp->right = NULL;
+temp->key = key;
+return temp;
+}
+int main()
+{
+int element=0;
+cout<< "\n enter root node element" << endl;
+cin>> element;
+getchar();
+Node *root = newNode(element);
+cout << "\n enter left child element" << endl;
+cin >> element;
+getchar();
+root->left = newNode(element);
+cout << "\n enter right child element" << endl;
+cin >> element;
+getchar();
+root->right = newNode(element);
+cout << "\n enter left child element of left child of root node element" << endl;
+cin >> element;
+getchar();
+root->left->left = newNode(element);
+cout << "\n enter right child element of left child of root node element" << endl;
+cin >> element;
+getchar();
+root->left->right = newNode(element);
+cout << "\n enter left child element of right child of root node element" << endl;
+cin >> element;
+getchar();
+root->right->left = newNode(element);
+cout << "\n enter right child element of right child of root node element" << endl;
+cin >> element;
+root->right->right = newNode(element);
+createThreaded(root);
+getchar();
+cout << "Inorder traversal of created threaded tree is" << endl;
+inOrder(root);
+getchar();
+return 0;
+}
+Program 7: Consider threading a binary tree using pre-order threads rather than in-order threads. Design an algorithm for traversal without using stack and analyse its complexity.
+Sol:
+#include<iostream>
+#include<conio.h>
+using namespace std;
+class TBT
+{
+private:
+int data;
+int lbit,rbit;
+TBT*lchild,*rchild;
+public:
+TBT*create_TBT(TBT*,TBT*);
+void inorder_TBT(TBT*,TBT*);
+void preorder_TBT(TBT*,TBT*);
+};
+void TBT::preorder_TBT(TBT*root,TBT*header)
+{
+TBT*trav;
+int flag=0;
+trav=root;
+while(trav!=header)
+{
+while(trav->lbit==0&&flag==0) //step 1) if normal child
+{
+cout<<" "<<trav->data;
+// print 50 and then 30
+trav=trav->lchild;
+// go to left child
+}
+if(flag==0)
+// step 2) if normal child but lbit=1 i.e last child
+cout<<" "<<trav->data;
+// print 15 and then 40, 55 , 70
+if(trav->rbit==0&&flag==0)
+{
+trav=trav->rchild;
+}
+else
+{
+if(trav->rbit==0&&flag==1)// step no 4 go to 40
+{
+trav=trav->rchild;
+flag=0; // mark 40 as not visited
+}
+else
+{
+if(trav->rbit==1&&flag==0)
+//step 3) if rt child is thread climb up
+{
+trav=trav->rchild;
+//from 15 go to 30 again
+flag=1;
+// make 30 as visited or printed
+}
+else
+{
+if(trav->rbit==1&&flag==1)
+{
+trav=trav->rchild;
+}
+}
+}
+}
+}
+}
+void TBT::inorder_TBT(TBT*root,TBT*header)
+{
+int flag=0;
+TBT*trav;
+trav=root;
+while(trav!=header)
+{
+while(trav->lbit!=1&&flag==0)
+{
+trav=trav->lchild; // go to left
+}
+cout<<" "<<trav->data; // ptint leftmost data
+if(trav->rbit==0)
+{
+trav=trav->rchild;
+flag=0;
+}
+else
+{
+trav=trav->rchild;
+flag=1;
+}
+}
+}
+TBT*TBT::create_TBT(TBT*root,TBT*header)
+{
+TBT*trav,*temp,*p;
+int attached_flag=0;
+char ans;
+while(1)
+{
+trav=root;
+if(root==NULL)
+{
+temp=new TBT();
+cout<<"\nEnter the data ";
+cin>>temp->data;
+temp->lbit=1;
+temp->rbit=1;
+temp->lchild=header;
+temp->rchild=header;
+root=temp;
+}
+else
+{
+temp=new TBT();
+cout<<"\nEnter the data ";
+cin>>temp->data;
+temp->lbit=1;
+temp->rbit=1;
+attached_flag=0;
+trav=root;
+while(attached_flag==0)
+{
+if(trav->data<temp->data&&trav->rbit==0)
+{
+trav=trav->rchild;
+}
+else
+if(trav->data<temp->data&&trav->rbit==1)
+{
+trav->rbit=0;
+p=trav->rchild;
+trav->rchild=temp;
+temp->rchild=p;
+temp->lchild=trav;
+attached_flag=1;
+}
+if(trav->data>temp->data&&trav->lbit==0)
+{
+trav=trav->lchild;
+}
+else
+if(trav->data>temp->data&&trav->lbit==1)
+{
+trav->lbit=0;
+p=trav->lchild;
+trav->lchild=temp;
+temp->lchild=p;
+temp->rchild=trav;
+attached_flag=1;
+}
+}
+attached_flag=0;
+}
+cout<<"\nDo you want to attach more nodes [y/n] ";
+cin>>ans;
+if(ans=='n'||ans=='N')
+break;
+}
+return root;
+}
+int main()
+{
+int choice;
+TBT*root=NULL,obj,*header=NULL;
+while(1)
+{
+cout<<"\n1.Create TBT";
+cout<<"\n2.Inorder TBT";
+cout<<"\n3.Preorder TBT";
+cout<<"\n4.Exit";
+cout<<"\nEnter your choice :";
+cin>>choice;
+switch(choice)
+{
+case 1: root=obj.create_TBT(root,header);
+break;
+case 2: obj.inorder_TBT(root,header);
+break;
+case 3: obj.preorder_TBT(root,header);
+break;
+}
+}
+}
+Program 8: A Dictionary stores keywords & its meanings. Provide facility for adding new keywords, deleting keywords, updating values of any entry. Provide facility to display whole data sorted in ascending/ Descending order. Also find how many maximum comparisons may require for finding any keyword. Use Binary Search Tree for implementation.
+Sol:
+#include"iostream"
+#include<string.h>
+using namespace std;
+typedef struct node
+{
+char k[20];
+char m[20];
+class node *left;
+class node * right;
+}node;
+class Dictionary
+{
+public:
+node *root;
+void create();
+void disp(node *);
+void insert(node * root, node *temp);
+int search(node *, char[]);
+int update(node *, char[]);
+node* del(node *, char[]);
+node * min(node *);
+};
+void Dictionary::create()
+{
+class node *temp;
+char ch;
+do
+{
+temp = new node;
+cout << "\nEnter Keyword:" << endl;
+cin >> temp->k;
+cout << "\nEnter Meaning:" << endl;
+cin >> temp->m;
+temp->left = NULL;
+temp->right = NULL;
+if (root == NULL)
+{
+root = temp;
+}
+else
+{
+insert(root, temp);
+}
+cout << "\nDo u want to add more (y/n):";
+cin >> ch;
+} while (ch == 'y' || ch == 'Y');
+}
+void Dictionary::insert(node * root, node *temp)
+{
+if (strcmp(temp->k, root->k) < 0)
+{
+if (root->left == NULL)
+root->left = temp;
+else
+insert(root->left, temp);
+}
+else
+{
+if (root->right == NULL)
+root->right = temp;
+else
+insert(root->right, temp);
+}
+}
+void Dictionary::disp(node * root)
+{
+if (root != NULL)
+{
+disp(root->left);
+cout << "\n Key Word :" << root->k << endl;
+cout << "\t Meaning :" << root->m << endl;
+disp(root->right);
+}
+}
+int Dictionary::search(node * root, char k[20])
+{
+int c = 0;
+while (root != NULL)
+{
+c++;
+if (strcmp(k, root->k) == 0)
+{
+cout << "\nNo of Comparisons: " << c << endl;
+return 1;
+}
+if (strcmp(k, root->k) < 0)
+root = root->left;
+if (strcmp(k, root->k) > 0)
+root = root->right;
+}
+return -1;
+}
+int Dictionary::update(node * root, char k[20])
+{
+while (root != NULL)
+{
+if (strcmp(k, root->k) == 0)
+{
+cout << "\nEnter New Meaning ofKeyword :" << root->k << endl;
+cin >> root->m;
+return 1;
+}
+if (strcmp(k, root->k) < 0)
+root = root->left;
+if (strcmp(k, root->k) > 0)
+root = root->right;
+}
+return -1;
+}
+node* Dictionary::del(node * root, char k[20])
+{
+node *temp;
+if (root == NULL)
+{
+cout << "\nElement No Found" << endl;
+return root;
+}
+if (strcmp(k, root->k) < 0)
+{
+root->left = del(root->left, k);
+return root;
+}
+if (strcmp(k, root->k) > 0)
+{
+root->right = del(root->right, k);
+return root;
+}
+if (root->right == NULL && root->left == NULL)
+{
+temp = root;
+delete temp;
+return NULL;
+}
+if (root->right == NULL)
+{
+temp = root;
+root = root->left;
+delete temp;
+return root;
+}
+else if (root->left == NULL)
+{
+temp = root;
+root = root->right;
+delete temp;
+return root;
+}
+temp = min(root->right);
+strcpy(root->k, temp->k);
+root->right = del(root->right, temp->k);
+return root;
+}
+node * Dictionary::min(node *q)
+{
+while (q->left != NULL)
+{
+q = q->left;
+}
+return q;
+}
+int main()
+{
+int ch;
+Dictionary d;
+d.root = NULL;
+do
+{
+cout << "\tMenu" << endl;
+cout << "\t1.Create" << endl;
+cout << "\t2.Disp" << endl;
+cout << "\t3.Search" << endl;
+cout << "\t4.Update" << endl;
+cout << "\t5.Delete" << endl;
+cout << "\nEnter Ur Choice : " << endl;
+cin >> ch;
+switch (ch)
+{
+case 1: d.create();
+break;
+case 2: if (d.root == NULL)
+{
+cout << "\nNo any Keyword" << endl;
+}
+else
+{
+d.disp(d.root);
+}
+break;
+case 3: if (d.root == NULL)
+{
+cout << "\nDictionary is Empty. First add keywords then try again " << endl;
+}
+else
+{
+cout << "\nEnter Keyword which u want to search:" << endl;
+char k[20];
+cin >> k;
+if (d.search(d.root, k) == 1)
+cout << "\nKeyword Found in the Dictionary" << endl;
+else
+cout << "\nKeyword Not Found" << endl;
+}
+break;
+case 4:
+if (d.root == NULL)
+{
+cout << "\nDictionary is Empty. First add keywords then try again " << endl;
+}
+else
+{
+cout << "\nEnter Keyword which meaning want to update:" << endl;
+char k[20];
+cin >> k;
+if (d.update(d.root, k) == 1)
+cout << "\nMeaning Updated" << endl;
+else
+cout << "\nMeaning Not Found" << endl;
+}
+break;
+case 5:
+if (d.root == NULL)
+{
+cout << "\nDictionary is Empty. First add keywords then try again " << endl;
+}
+else
+{
+cout << "\nEnter Keyword which u want to delete:" << endl;
+char k[20];
+cin >> k;
+if (d.root == NULL)
+{
+cout << "\nNo any Keyword" << endl;
+}
+else
+{
+d.root = d.del(d.root, k);
+}
+}
+}
+} while (ch <= 5);
+return 0;
+}
+Program 9: Write a function to get the number of vertices in an undirected graph and its edges. You may assume that no edge is input twice.
+a. Use adjacency list representation of the graph and find runtime of the function
+b. Use adjacency matrix representation of the graph and find runtime of the function
+Sol:
+#include<iostream>
+#include<stdlib.h>
+using namespace std;
+struct node
+{
+char vertex;
+node *next;
+};
+class adjmatlist
+{
+int m[10][10], n, i, j; char ch; char v[20]; node *head[20]; node *temp = NULL;
+public:
+adjmatlist()
+{
+for (i = 0; i < 20; i++)
+{
+head[i] = NULL;
+}
+}
+void getgraph();
+void adjlist();
+void displaym();
+void displaya();
+};
+void adjmatlist::getgraph()
+{
+cout << "\n enter no. of vertices in graph(max. 20)" << endl;
+cin >> n;
+cout << "\n enter name of vertices" << endl;
+for (i = 0; i < n; i++)
+cin >> v[i];
+for (i = 0; i < n; i++)
+{
+for (j = 0; j < n; j++)
+{
+cout << "\n edge present between " << v[i] << "-----" << v[j] << " then press enter y otherwise n " << endl;
+cin >> ch;
+if (ch == 'y' || ch == 'Y')
+{
+m[i][j] = 1;
+}
+else if (ch == 'n' || ch == 'N')
+{
+m[i][j] = 0;
+}
+else
+{
+cout << "\n unknown entry" << endl;
+}
+}
+}
+adjlist();
+}
+void adjmatlist::adjlist()
+{
+for (i = 0; i < n; i++)
+{
+node *p = new(struct node);
+p->next = NULL;
+p->vertex = v[i];
+head[i] = p;
+}
+for (i = 0; i < n; i++)
+{
+for (j = 0; j < n; j++)
+{
+if (m[i][j] == 1)
+{
+node *p = new(struct node);
+p->vertex = v[j];
+p->next = NULL;
+if (head[i]->next == NULL)
+{
+head[i]->next = p;
+}
+else
+{
+temp = head[i];
+while (temp->next != NULL)
+{
+temp = temp->next;
+}
+temp->next = p;
+}
+}
+}
+}
+}
+void adjmatlist::displaym()
+{
+for (i = 0; i < n; i++)
+{
+for (j = 0; j < n; j++)
+cout << m[i][j] << " ";
+cout << "\n";
+}
+}
+void adjmatlist::displaya()
+{
+cout << "\n adjacency list is" << endl;
+for (i = 0; i < n; i++)
+{
+if (head[i] == NULL)
+{
+cout << "\n adjacency list not present" << endl; break;
+}
+else
+{
+cout << "\n" << head[i]->vertex;
+temp = head[i]->next;
+while (temp != NULL)
+{
+cout << "-> " << temp->vertex;
+temp = temp->next;
+}
+}
+}
+}
+int main()
+{
+int m;
+adjmatlist a;
+while (1)
+{
+cout << "\n\n\n enter the choice"<<endl;
+cout << "\n 1.enter graph" << endl;
+cout << "\n 2.display adjacency matrix" << endl;
+cout << "\n 3.display adjacency list" << endl;
+cout << "\n 4.exit" << endl;
+cin >> m;
+switch (m)
+{
+case 1: a.getgraph();
+break;
+case 2: a.displaym();
+break;
+case 3: a.displaya();
+break;
+case 4: exit(0);
+default: cout << "\n unknown choice" << endl;
+}
+}
+return 0;
+}
+Program 10: There are flight paths between cities. If there is a flight between city A and city B then there is an edge between the cities. The cost of the edge can be the time that flight takes to reach city B from A, or the amount of fuel used for the journey. Represent this as a graph. The node can be represented by airport name or name of the city. Use adjacency list representation of the graph or use adjacency matrix representation of the graph. Justify the storage representation used.
+Sol:
+#include<iostream>
+#include<stdlib.h>
+#include<string.h>
+using namespace std;
+struct node
+{
+string vertex;
+int time;
+node *next;
+};
+class adjmatlist
+{
+int m[10][10], n, i, j; char ch; string v[20]; node *head[20]; node *temp = NULL;
+public:
+adjmatlist()
+{
+for (i = 0; i < 20; i++)
+{
+head[i] = NULL;
+}
+}
+void getgraph();
+void adjlist();
+void displaym();
+void displaya();
+};
+void adjmatlist::getgraph()
+{
+cout << "\n Enter no. of cities(max. 20)" << endl;
+cin >> n;
+cout << "\n enter name of cities" << endl;
+for (i = 0; i < n; i++)
+cin >> v[i];
+for (i = 0; i < n; i++)
+{
+for (j = 0; j < n; j++)
+{
+cout << "\n if path is present between city " << v[i] << " and " << v[j] << " then press enter y otherwise n " << endl;
+cin >> ch;
+if (ch == 'y' || ch == 'Y')
+{
+cout << "\n enter time required to reach city " << v[j] << " from " << v[i] << " in minutes " << endl;
+cin >> m[i][j];
+}
+else if (ch == 'n' || ch == 'N')
+{
+m[i][j] = 0;
+}
+else
+{
+cout << "\n unknown entry " << endl;
+}
+}
+}
+adjlist();
+}
+void adjmatlist::adjlist()
+{
+cout << "\n ************ " << endl;
+for (i = 0; i < n; i++)
+{
+node *p = new(struct node);
+p->next = NULL;
+p->vertex = v[i];
+head[i] = p; cout << "\n" << head[i]->vertex;
+}
+for (i = 0; i < n; i++)
+{
+for (j = 0; j < n; j++)
+{
+if (m[i][j] != 0)
+{
+node *p = new(struct node);
+p->vertex = v[j];
+p->time = m[i][j];
+p->next = NULL;
+if (head[i]->next == NULL)
+{
+head[i]->next = p;
+}
+else
+{
+temp = head[i];
+while (temp->next != NULL)
+{
+temp = temp->next;
+}
+temp->next = p;
+}
+}
+}
+}
+}
+void adjmatlist::displaym()
+{
+cout << "\n";
+for (j = 0; j < n; j++)
+{
+cout << "\t" << v[j];
+}
+for (i = 0; i < n; i++)
+{
+cout << "\n " << v[i];
+for (j = 0; j < n; j++)
+{
+cout << "\t" << m[i][j];
+}
+cout << "\n";
+}
+}
+void adjmatlist::displaya()
+{
+cout << "\n adjacency list is";
+for (i = 0; i < n; i++)
+{
+if (head[i] == NULL)
+{
+cout << "\n adjacency list not present" << endl; break;
+}
+else
+{
+cout << "\n" << head[i]->vertex;
+temp = head[i]->next;
+while (temp != NULL)
+{
+cout << "-> " << temp->vertex;
+temp = temp->next;
+}
+}
+}
+cout << "\n path and time required to reach cities is" << endl;
+for (i = 0; i < n; i++)
+{
+if (head[i] == NULL)
+{
+cout << "\n adjacency list not present"; break;
+}
+else
+{
+temp = head[i]->next;
+while (temp != NULL)
+{
+cout << "\n" << head[i]->vertex;
+cout << "-> " << temp->vertex << "\n [time required: " << temp->time << " min ]";
+temp = temp->next;
+}
+}
+}
+}
+int main()
+{
+int m;
+adjmatlist a;
+while (1)
+{
+cout << "\n\n\n enter the choice" << endl;
+cout << "\n 1.enter graph" << endl;
+cout << "\n 2.display adjacency matrix for cities" << endl;
+cout << "\n 3.display adjacency list for cities" << endl;
+cout << "\n 4.exit" << endl;
+cin >> m;
+switch (m)
+{
+case 1: a.getgraph();
+break;
+case 2: a.displaym();
+break;
+case 3: a.displaya();
+break;
+case 4: exit(0);
+default: cout << "\n unknown choice" << endl;
+}
+}
+return 0;
+}
